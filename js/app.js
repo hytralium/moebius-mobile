@@ -1435,7 +1435,7 @@ t=t+dt</pre>
   function baseName() { return (doc.fileName || doc.sims[0].name || 'Simulation').replace(/\.(prg|json)$/i, ''); }
   function saveDoc(asName) {
     let name = asName || doc.fileName || '';
-    if (!/\.(prg|json)$/i.test(name)) name = `${baseName()}.prg`;
+    if (!/\.(prg|json)$/i.test(name) || (/\.prg$/i.test(name) && !window.MoebiusPrgWriter)) name = `${baseName()}.json`; // .prg-Schreiben folgt
     if (/\.json$/i.test(name)) {
       download(name, new Blob([JSON.stringify(serializeDoc(), null, 2)], { type: 'application/json' }));
     } else {
