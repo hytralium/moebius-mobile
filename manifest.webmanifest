@@ -1,0 +1,11 @@
+{
+  "name": "Moebius Web",
+  "short_name": "Moebius",
+  "description": "Modelle einfach bilden und simulieren – Kleinschrittverfahren im Browser",
+  "lang": "de",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f0f0f0",
+  "theme_color": "#f0f0f0",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
