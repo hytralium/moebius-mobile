@@ -77,8 +77,8 @@ t=t+dt`,
       },
       {
         name: 'PKW', reps: 3000, caseSensitive: false,
-        text: `if v>=v_max then a=0
-v=v+a*dt
+        text: `v=v+a*dt
+if v>=v_max then a=0: v=v_max
 s=s+v*dt
 t=t+dt`,
         startValues: { v: '22', v_max: '36', a: '2,5', dt: '0,01', s: '0', t: '0' },

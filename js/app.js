@@ -15,7 +15,7 @@
     ['rot', '#ff0000'], ['pink', '#ff00ff'], ['gelb', '#ffff00'], ['weiß', '#ffffff'],
   ];
   // Reihenfolge der Kurvenfarben (Original: schwarz, dunkelblau, …)
-  const CURVE_COLORS = ['#000000', '#000080', '#ff0000', '#008000', '#800080', '#008080', '#800000', '#0000ff', '#808000', '#ff00ff'];
+  const CURVE_COLORS = ['#000000']; // Original: alle Kurven zunächst schwarz
   const LINE_STYLES = [['solid', 'durchgezogen'], ['dash', 'gestrichelt'], ['dot', 'gepunktet'], ['dashdot', 'Strich-Punkt'], ['dashdotdot', 'Strich-Punkt-Punkt'], ['none', 'unsichtbar']];
   const DASH = { solid: [], dash: [9, 5], dot: [2, 4], dashdot: [9, 4, 2, 4], dashdotdot: [9, 3, 2, 3, 2, 3], none: [] };
   const ANIM_IMAGES = [['kugel-rot', 'Kugel rot'], ['kugel-gruen', 'Kugel grün'], ['kugel-blau', 'Kugel blau'], ['kreis-rot', 'Kreis rot'], ['kreis-gruen', 'Kreis grün'], ['kreis-blau', 'Kreis blau'], ['erde', 'Erde'], ['satellit', 'Satellit'], ['auto', 'Auto']];
@@ -42,8 +42,9 @@
   };
 
   const refLabel = (r) => (doc.sims.length > 1 ? `${r.name} [${r.sim}]` : r.name);
-  const refKey = (r) => `${r.sim}\u0001${r.name.toLowerCase()}`;
-  const sameRef = (a, b) => a.sim === b.sim && a.name.toLowerCase() === b.name.toLowerCase();
+  const simCS = (name) => { const s = doc.sims.find((x) => x.name === name); return !!(s && s.caseSensitive); };
+  const refKey = (r) => `${r.sim}\u0001${simCS(r.sim) ? r.name : r.name.toLowerCase()}`;
+  const sameRef = (a, b) => a.sim === b.sim && (simCS(a.sim) ? a.name === b.name : a.name.toLowerCase() === b.name.toLowerCase());
   const simByName = (n) => doc.sims.find((s) => s.name === n);
   const keyOf = (sim, name) => (sim.caseSensitive ? name : name.toLowerCase());
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -130,7 +131,8 @@
     if (!r || !name) return -1;
     const k = keyOf(doc.sims[simIdx], name);
     let i = r.vars.findIndex((v) => v.key === k);
-    if (i < 0) i = r.vars.findIndex((v) => v.key.toLowerCase() === name.toLowerCase());
+    if (i < 0 && !doc.sims[simIdx].caseSensitive) i = r.vars.findIndex((v) => v.key.toLowerCase() === name.toLowerCase());
+    if (i < 0 && doc.sims[simIdx].caseSensitive) i = r.vars.findIndex((v) => v.key.toLowerCase() === name.toLowerCase() && !r.vars.some((w) => w !== v && w.key.toLowerCase() === name.toLowerCase()));
     return i;
   }
 
@@ -150,7 +152,7 @@
     const fill = (el, val, allowEmpty) => {
       el.innerHTML = (allowEmpty ? '<option value="">–</option>' : '') + names.map((n) => `<option>${esc(n)}</option>`).join('');
       const match = names.find((n) => n.toLowerCase() === String(val || '').toLowerCase());
-      el.value = match || (allowEmpty ? '' : names.find((n) => n.toLowerCase() === 't') || names[0] || '');
+      el.value = match || (allowEmpty ? '' : names[0] || '');
       return el.value;
     };
     doc.view.x = fill($('xAxis'), doc.view.x, false);
@@ -965,10 +967,7 @@
     const oldName = sim.name;
     Object.assign(sim, { name, text, caseSensitive: cs, reps, startValues: values });
     if (oldName !== name) [doc.view.y, doc.view.table].forEach((l) => l.forEach((y) => { if (y.sim === oldName) y.sim = name; }));
-    if (!doc.view.y.length) {
-      const tv = compiled.vars.find((v) => v.name.toLowerCase() === 't');
-      if (tv) doc.view.x = tv.name;
-    }
+    if (!doc.view.y.length && !compiled.vars.some((v) => v.name.toLowerCase() === String(doc.view.x).toLowerCase())) doc.view.x = compiled.vars.length ? compiled.vars[0].name : ''; // Original: erste Variable
     persist();
     runAll();
   });
@@ -1435,12 +1434,13 @@ t=t+dt</pre>
   function baseName() { return (doc.fileName || doc.sims[0].name || 'Simulation').replace(/\.(prg|json)$/i, ''); }
   function saveDoc(asName) {
     let name = asName || doc.fileName || '';
-    if (!/\.(prg|json)$/i.test(name) || (/\.prg$/i.test(name) && !window.MoebiusPrgWriter)) name = `${baseName()}.json`; // .prg-Schreiben folgt
+    if (!/\.(prg|json)$/i.test(name)) name = `${baseName()}.prg`;
     if (/\.json$/i.test(name)) {
       download(name, new Blob([JSON.stringify(serializeDoc(), null, 2)], { type: 'application/json' }));
     } else {
       if (!window.MoebiusPrgWriter) { alertDialog('Speichern', 'Speichern als .prg ist nicht verfügbar.'); return; }
-      const bytes = window.MoebiusPrgWriter.write(doc, results);
+      let bytes;
+      try { bytes = window.MoebiusPrgWriter.write(doc); } catch (e) { alertDialog('Speichern', `Fehler beim Speichern: ${e.message}`); return; }
       download(name, new Blob([bytes], { type: 'application/octet-stream' }));
     }
     doc.fileName = name; doc.dirty = false; persist(false);
@@ -1474,8 +1474,9 @@ t=t+dt</pre>
         const sims = MoebiusPrg.parsePrg(buf);
         const seen = {};
         sims.forEach((s) => { if (seen[s.name]) s.name = `${s.name} (${++seen[s.name]})`; else seen[s.name] = 1; });
-        nd = { sims: sims.map(({ selected, ...s }) => s), view: defaultView(), current: 0 };
+        nd = { sims: sims.map(({ selected, x, ...s }) => s), view: defaultView(), current: 0 };
         sims.forEach((s) => s.selected.forEach((n) => nd.view.y.push({ sim: s.name, name: n })));
+        if (sims[0].x) nd.view.x = sims[0].x;
       } else {
         let j;
         try { j = JSON.parse(new TextDecoder().decode(buf)); } catch (_) { j = null; }

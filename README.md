@@ -25,7 +25,7 @@ python3 -m http.server 8000
 | Textwerkzeug mit F / K / U, x², x₂, Größe, Schriftart | gleich |
 | Mehrere Simulationen pro Datei, Kurven als `v [Name]` | gleich |
 | Tabellenansicht, Drucken | gleich, zusätzlich CSV- und PNG-Export |
-| `.prg`-Dateien | **können geöffnet werden** (Gleichungen, Startwerte, Wiederholungen, gewählte y-Größen) |
+| `.prg`-Dateien | **öffnen und speichern** – im Originalprogramm (Moebius 3.0) geprüft |
 
 ### Schreibweise der Gleichungen
 
@@ -47,15 +47,15 @@ s=s+v*dt: t=t+dt
 
 ## Grenzen / Unterschiede
 
-- **Grafisches Modell**: zeigt nur eine aus den Gleichungen erzeugte Übersicht (Einfluss-, Zwischen-, Zustandsgrößen); grafisches Modellieren per Maus ist nicht umgesetzt.
-- **Speichern** erfolgt als `.json`. Original-`.prg`-Dateien werden nur gelesen; das Binärformat ist nicht dokumentiert und wurde an Beispieldateien ermittelt. Kurvenfarben, Texte und Achseneinstellungen aus `.prg` werden nicht übernommen.
+- **Sprachliches / Grafisches Modell**: zeigen eine aus den Gleichungen erzeugte Übersicht (nur Ansicht); Modellieren per Maus wie im Original ist noch nicht umgesetzt.
+- **`.prg`-Dateien**: Gespeichert werden Simulationen (Gleichungen, Startwerte, Wiederholungen, Groß-/Kleinschreibung), x-Achse und gewählte y-Größen. Das Schaubild baut Moebius beim Öffnen selbst neu auf; Kurvenfarben, Texte, Grafiken und Achseneinstellungen gehen dabei verloren – sie bleiben nur beim Speichern als `.json` erhalten. Das Binärformat ist nicht dokumentiert; es wurde ermittelt und mit dem Originalprogramm getestet.
 - Bei sehr vielen Durchläufen (> 25 Mio. gespeicherte Werte) wird für die Anzeige jeder n-te Wert gespeichert.
 
 ## Dateien
 
 - `index.html`, `css/style.css` – Oberfläche
 - `js/parser.js` – Gleichungs-Parser (ohne `eval`)
-- `js/prg.js` – Import von Moebius-`.prg`-Dateien
+- `js/prg.js` / `js/prg-writer.js` – Lesen und Schreiben von Moebius-`.prg`-Dateien
 - `js/app.js` – Simulation, Schaubild, Tabelle, Dialoge
 - `js/examples.js` – eigene Beispielmodelle (Datei → Beispiele)
 

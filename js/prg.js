@@ -55,7 +55,15 @@
       r += cnt * 8 + 53;
       vars.push({ name: vname, isStart, start, selected: (flags & 1) === 1, cnt });
     }
-    return { sim: { name, lines, vars }, end: r };
+    // Abschluss der Simulation: x-Achse, y-Achse (3D), Wiederholungen, Groß-/Kleinschreibung
+    const sim = { name, lines, vars };
+    const rd = (q) => { const l = i32(q); return l >= 0 && l <= 200 && q + 4 + l <= len ? [latin1.decode(u8.subarray(q + 4, q + 4 + l)), q + 4 + l] : null; };
+    const xa = rd(r), ya = xa && rd(xa[1]);
+    if (ya && ya[1] + 5 <= len) {
+      const reps = i32(ya[1]);
+      if (reps >= 1 && reps <= 1e8) { sim.x = xa[0]; sim.y3 = ya[0]; sim.reps = reps; sim.cs = u8[ya[1] + 4] === 1; r = ya[1] + 5; }
+    }
+    return { sim, end: r };
   }
 
   function parsePrg(buffer) {
@@ -65,7 +73,7 @@
     const dv = new DataView(buffer);
     const sims = [];
     let p = 9;
-    let scanLimit = u8.length; // erste Simulation: ganze Datei durchsuchen
+    let scanLimit = u8.length; // erste Simulation: ganze Datei durchsuchen (Schaubild-Objekte davor)
     while (p < u8.length - 12 && p < scanLimit) {
       const res = trySim(dv, u8, p);
       if (res) {
@@ -78,14 +86,12 @@
 
     return sims.map((s) => {
       // Groß-/Kleinschreibung nötig, wenn sich Namen nur darin unterscheiden (z. B. A und a)
-      const lower = new Set();
-      let caseSensitive = false;
-      for (const v of s.vars) {
-        const k = v.name.toLowerCase();
-        if (lower.has(k)) caseSensitive = true;
-        lower.add(k);
+      let caseSensitive = !!s.cs;
+      if (s.cs === undefined) { // ältere Dateien: aus den Namen schließen
+        const lower = new Set();
+        for (const v of s.vars) { const k = v.name.toLowerCase(); if (lower.has(k)) caseSensitive = true; lower.add(k); }
       }
-      const reps = Math.max(0, ...s.vars.map((v) => v.cnt)) || 100;
+      const reps = s.reps || Math.max(0, ...s.vars.map((v) => v.cnt)) || 100;
       const startValues = {};
       s.vars.forEach((v) => {
         if (v.isStart) startValues[caseSensitive ? v.name : v.name.toLowerCase()] = MoebiusParser.formatNumber(v.start, 10);
@@ -97,6 +103,7 @@
         caseSensitive,
         startValues,
         selected: s.vars.filter((v) => v.selected).map((v) => v.name),
+        x: s.x || '',
       };
     });
   }
