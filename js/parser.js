@@ -55,7 +55,7 @@ function tokenize(src, lineNo) {
       toks.push({ t: 'op', v: norm, pos: i }); i += 2; continue;
     }
     if ('+-*/^()<>=;:'.includes(c)) { toks.push({ t: 'op', v: c, pos: i }); i++; continue; }
-    throw new MoebiusError(`Zeile ${lineNo}: unbekanntes Zeichen „${c}“`, lineNo);
+    throw new MoebiusError(`Zeile ${lineNo}: Syntax-Fehler. (Zeichen „${c}“)`, lineNo);
   }
   return toks;
 }
@@ -75,7 +75,8 @@ function compile(text, caseSensitive) {
   const condStack = [];        // Lesezugriffe umgebender if-Bedingungen
   const slot = (name) => {
     const k = keyOf(name);
-    if (!index.has(k)) { index.set(k, vars.length); vars.push({ name, key: k, isStart: false }); }
+    // Ohne Groß-/Kleinschreibung zeigt das Original alle Namen in Großbuchstaben
+    if (!index.has(k)) { index.set(k, vars.length); vars.push({ name: caseSensitive ? name : name.toUpperCase(), key: k, isStart: false }); }
     return index.get(k);
   };
   const read = (name) => {
@@ -97,7 +98,7 @@ function compile(text, caseSensitive) {
     const isOp = (v) => p < toks.length && toks[p].t === 'op' && toks[p].v === v;
     const isKw = (v) => p < toks.length && toks[p].t === 'kw' && toks[p].v === v;
     const fail = (msg) => { throw new MoebiusError(`Zeile ${lineNo}: ${msg}`, lineNo); };
-    const expectOp = (v) => { if (!isOp(v)) fail(`„${v}“ erwartet`); p++; };
+    const expectOp = (v) => { if (!isOp(v)) fail(v === ')' ? 'Klammer-Fehler.' : `Syntax-Fehler. („${v}“ erwartet)`); p++; };
 
     // ----- Ausdrücke -----
     function orExpr() {
@@ -161,7 +162,7 @@ function compile(text, caseSensitive) {
     }
     function primary() {
       const tk = peek();
-      if (!tk) fail('Ausdruck unvollständig');
+      if (!tk) fail('Konstante, Variable oder Funktion erwartet.');
       if (tk.t === 'num') { p++; const v = tk.v; return () => v; }
       if (isOp('(')) { p++; const e = orExpr(); expectOp(')'); return e; }
       if (tk.t === 'id') {
@@ -173,11 +174,12 @@ function compile(text, caseSensitive) {
           const a = orExpr(); expectOp(')');
           return (m) => f(a(m));
         }
-        if (isOp('(')) fail(`unbekannte Funktion „${tk.v}“`);
+        if (fname === 'random' || fname === 'rnd') return () => Math.random(); // random ohne Argument: 0 … 1
+        if (isOp('(')) fail(`Unbekannte Funktion. („${tk.v}“)`);
         const s = read(tk.v);
         return (m) => m[s];
       }
-      fail(`unerwartetes Symbol „${tk.v}“`);
+      fail(`Konstante, Variable oder Funktion erwartet. („${tk.v}“)`);
     }
 
     // ----- Anweisungen -----
@@ -187,7 +189,7 @@ function compile(text, caseSensitive) {
         reads = new Set();
         const cond = orExpr();
         condStack.push(reads); reads = null;
-        if (!isKw('then')) fail('„then“ erwartet');
+        if (!isKw('then')) fail('Syntax-Fehler. („then“ fehlt)');
         p++;
         const thenPart = stmtList(true);
         let elsePart = null;
@@ -198,9 +200,9 @@ function compile(text, caseSensitive) {
           : (m) => { if (cond(m)) thenPart(m); };
       }
       const tk = peek();
-      if (!tk || tk.t !== 'id') fail('Zuweisung „Name = Ausdruck“ erwartet');
+      if (!tk || tk.t !== 'id') fail('Variable erwartet.');
       p++;
-      if (!isOp('=')) fail(`„=“ nach „${tk.v}“ erwartet`);
+      if (!isOp('=')) fail(`Syntax-Fehler. („=“ nach „${tk.v}“ fehlt)`);
       p++;
       reads = new Set();
       const e = orExpr();               // rechte Seite zuerst (Reihenfolge wie im Original)
@@ -218,7 +220,7 @@ function compile(text, caseSensitive) {
         if (p >= toks.length || (stopAtElse && isKw('else'))) break;
         list.push(statement());
         if (p < toks.length && !isOp(';') && !isOp(':') && !(stopAtElse && isKw('else'))) {
-          fail(`unerwartetes „${peek().v}“ – fehlt „:“ zwischen zwei Anweisungen?`);
+          fail(`Syntax-Fehler. („${peek().v}“ – fehlt „:“ zwischen zwei Anweisungen?)`);
         }
       }
       if (list.length === 1) return list[0];

@@ -14,91 +14,103 @@
 <div class="app" id="app">
   <!-- Menüleiste -->
   <nav class="menubar" id="menubar" aria-label="Menü">
-    <div class="menu"><button class="menu-btn">Datei</button>
+    <div class="menu"><button class="menu-btn"><u>D</u>atei</button>
       <div class="menu-list">
-        <button data-act="new">Neu</button>
-        <button data-act="open">Öffnen… <kbd>Strg+O</kbd></button>
-        <div class="submenu"><button>Beispiele ▸</button><div class="menu-list" id="exampleMenu"></div></div>
-        <button data-act="save">Speichern <kbd>Strg+S</kbd></button>
+        <button data-act="new"><u>N</u>eu</button>
+        <button data-act="open">Ö<u>f</u>fnen… <kbd>Strg+O</kbd></button>
+        <div class="submenu"><button>Beispiel öffnen… ▸</button><div class="menu-list" id="exampleMenu"></div></div>
+        <button data-act="save"><u>S</u>peichern <kbd>Strg+S</kbd></button>
+        <button data-act="saveAs">Speichern <u>u</u>nter…</button>
+        <button data-act="exportCsv">Nach E<u>x</u>cel exportieren</button>
         <hr>
-        <button data-act="exportCsv">Tabelle als CSV exportieren</button>
-        <button data-act="exportPng">Schaubild als Bild speichern</button>
-        <hr>
-        <button data-act="print">Drucken… <kbd>Strg+P</kbd></button>
+        <button data-act="printDlg"><u>D</u>rucken… <kbd>Strg+P</kbd></button>
       </div>
     </div>
-    <div class="menu"><button class="menu-btn">Bearbeiten</button>
+    <div class="menu"><button class="menu-btn"><u>B</u>earbeiten</button>
       <div class="menu-list">
-        <button data-act="input">Eingabe… <kbd>F2</kbd></button>
-        <button data-act="double">Wiederholungen verdoppeln und neu rechnen</button>
+        <button data-act="cut"><u>A</u>usschneiden <kbd>Strg+X</kbd></button>
+        <button data-act="copy"><u>K</u>opieren <kbd>Strg+C</kbd></button>
+        <button data-act="paste"><u>E</u>infügen <kbd>Strg+V</kbd></button>
+        <button data-act="del"><u>L</u>öschen <kbd>Entf</kbd></button>
         <hr>
-        <button data-act="newSim">Neue Simulation</button>
-        <button data-act="dupSim">Simulation kopieren</button>
-        <button data-act="delSim">Simulation löschen</button>
+        <button data-act="rotate"><u>D</u>rehen</button>
         <hr>
-        <button data-act="deleteText">Markierten Text löschen <kbd>Entf</kbd></button>
+        <button data-act="input"><u>S</u>imulation</button>
       </div>
     </div>
-    <div class="menu"><button class="menu-btn">Ansicht</button>
+    <div class="menu"><button class="menu-btn"><u>A</u>nsicht</button>
       <div class="menu-list">
-        <button data-act="showGraph">Schaubild</button>
-        <button data-act="showTable">Tabelle</button>
+        <button data-act="showGraph"><u>S</u>chaubild</button>
+        <button data-act="showTable"><u>T</u>abelle</button>
         <hr>
-        <button data-act="toggleSeparate">getrennte Schaubilder</button>
-        <button data-act="toggle3d">3-dimensional</button>
-        <button data-act="toggleGrid">Gitternetz</button>
-        <button data-act="togglePanel">Seitenleiste</button>
+        <button data-act="toggleImmediate" class="chk-item" id="miImmediate">sofort an<u>z</u>eigen</button>
+        <button data-act="toggleAutoScale" class="chk-item" id="miAutoScale"><u>a</u>utomatisch skalieren</button>
+        <hr>
+        <button data-act="animStart">Animation sta<u>r</u>ten</button>
+        <button data-act="animPause" class="needs-anim">Animation <u>P</u>ause</button>
+        <button data-act="animStop" class="needs-anim">Animation <u>b</u>eenden</button>
+        <hr>
+        <button data-act="redraw"><u>N</u>eu zeichnen</button>
       </div>
     </div>
-    <div class="menu"><button class="menu-btn">Einfügen</button>
+    <div class="menu"><button class="menu-btn"><u>E</u>infügen</button>
       <div class="menu-list">
-        <button data-act="insertText">Text</button>
+        <button data-act="newSim"><u>N</u>eue Simulation</button>
+        <button data-act="dupSim"><u>K</u>opie der Simulation</button>
+        <hr>
+        <button data-act="insertImage"><u>G</u>rafik</button>
       </div>
     </div>
-    <div class="menu"><button class="menu-btn">Format</button>
+    <div class="menu"><button class="menu-btn"><u>F</u>ormat</button>
       <div class="menu-list">
-        <button data-act="formatX">x-Achse…</button>
-        <button data-act="formatY">y-Achse…</button>
-        <button data-act="formatCurves">Kurven…</button>
-        <button data-act="autoScale">Achsen automatisch skalieren</button>
+        <button data-act="formatText"><u>T</u>ext</button>
+        <button data-act="formatImage"><u>G</u>rafik</button>
+        <hr>
+        <button data-act="axisNumbers">Zahlen an <u>A</u>chsen</button>
+        <button data-act="toggleLegend" class="chk-item" id="miLegend"><u>L</u>egende</button>
+        <button data-act="graphDlg"><u>S</u>chaubild</button>
+        <hr>
+        <button data-act="tableNumbers"><u>Z</u>ahlen in Tabelle</button>
       </div>
     </div>
-    <div class="menu"><button class="menu-btn">Hilfe</button>
+    <div class="menu"><button class="menu-btn"><u>H</u>ilfe</button>
       <div class="menu-list">
-        <button data-act="help">Kurzanleitung</button>
-        <button data-act="about">Über Moebius Web</button>
+        <button data-act="help"><u>I</u>nhalt <kbd>F1</kbd></button>
+        <button data-act="helpUsage"><u>B</u>edienung</button>
+        <button data-act="helpIntro"><u>E</u>inführung in Moebius</button>
+        <button data-act="helpSchool">Moebius im <u>U</u>nterricht</button>
+        <hr>
+        <button data-act="about">Info über…</button>
       </div>
     </div>
   </nav>
 
   <!-- Werkzeugleiste -->
   <div class="toolbar" id="toolbar" role="toolbar">
-    <button class="tb" data-act="open" title="Öffnen"><svg viewBox="0 0 16 16"><path d="M1 4h5l1 1h7v8H1z" fill="#f4c542" stroke="#8a6d00"/><path d="M3 7h12l-2 6H1z" fill="#ffd966" stroke="#8a6d00"/></svg></button>
-    <button class="tb" data-act="save" title="Speichern"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#2b4fb3" stroke="#132a6b"/><rect x="4" y="2" width="8" height="5" fill="#fff"/><rect x="4" y="10" width="8" height="4" fill="#c00"/></svg></button>
-    <button class="tb" data-act="print" title="Drucken"><svg viewBox="0 0 16 16"><rect x="4" y="1.5" width="8" height="5" fill="#fff" stroke="#333"/><rect x="1.5" y="6.5" width="13" height="6" fill="#bbb" stroke="#333"/><rect x="4" y="10.5" width="8" height="4" fill="#fff" stroke="#333"/></svg></button>
+    <button class="tb" data-act="open" title="Datei öffnen"><svg viewBox="0 0 16 16"><path d="M1 4h5l1 1h7v8H1z" fill="#f4c542" stroke="#8a6d00"/><path d="M3 7h12l-2 6H1z" fill="#ffd966" stroke="#8a6d00"/></svg></button>
+    <button class="tb" data-act="save" title="Datei speichern"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#2b4fb3" stroke="#132a6b"/><rect x="4" y="2" width="8" height="5" fill="#fff"/><rect x="4" y="10" width="8" height="4" fill="#c00"/></svg></button>
+    <button class="tb" data-act="printDlg" title="Drucken"><svg viewBox="0 0 16 16"><rect x="4" y="1.5" width="8" height="5" fill="#fff" stroke="#333"/><rect x="1.5" y="6.5" width="13" height="6" fill="#bbb" stroke="#333"/><rect x="4" y="10.5" width="8" height="4" fill="#fff" stroke="#333"/></svg></button>
     <span class="sep"></span>
     <button class="tb" data-act="newSim" title="Neue Simulation"><svg viewBox="0 0 16 16"><path d="M3 1.5h7l3 3v10H3z" fill="#fff" stroke="#333"/><path d="M10 1.5v3h3" fill="none" stroke="#333"/></svg></button>
-    <button class="tb" data-act="dupSim" title="Simulation kopieren"><svg viewBox="0 0 16 16"><path d="M2 1.5h6l2 2v8H2z" fill="#fff8cc" stroke="#333"/><path d="M6 4.5h6l2 2v8H6z" fill="#fff" stroke="#333"/></svg></button>
-    <button class="tb" data-act="input" title="Eingabe (F2)"><svg viewBox="0 0 16 16"><path d="M3 1.5h10v13H3z" fill="#fff" stroke="#333"/><path d="M5 5h6M5 8h6M5 11h4" stroke="#2b4fb3"/></svg></button>
+    <button class="tb" data-act="dupSim" title="Kopie der Simulation"><svg viewBox="0 0 16 16"><path d="M2 1.5h6l2 2v8H2z" fill="#fff8cc" stroke="#333"/><path d="M6 4.5h6l2 2v8H6z" fill="#fff" stroke="#333"/></svg></button>
+    <button class="tb" data-act="input" title="Simulation bearbeiten"><svg viewBox="0 0 16 16"><path d="M3 1.5h10v13H3z" fill="#fff" stroke="#333"/><path d="M5 5h6M5 8h6M5 11h4" stroke="#2b4fb3"/></svg></button>
     <span class="sep"></span>
     <button class="tb toggle" data-act="showGraph" id="tbGraph" title="Schaubild"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><path d="M3 12l4-5 3 3 4-6" fill="none" stroke="#c00" stroke-width="1.4"/></svg></button>
     <button class="tb toggle" data-act="showTable" id="tbTable" title="Tabelle"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><path d="M1.5 5.5h13M1.5 9.5h13M6 1.5v13M10.5 1.5v13" stroke="#333"/><rect x="2" y="2" width="12" height="3" fill="#9cf"/></svg></button>
     <span class="sep"></span>
-    <button class="tb" data-act="play" title="Ablauf animieren"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><path d="M6 4l6 4-6 4z" fill="#14883e"/></svg></button>
-    <button class="tb" data-act="stop" title="Animation beenden"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><rect x="5" y="5" width="6" height="6" fill="#777"/></svg></button>
-    <button class="tb" data-act="pause" title="Animation anhalten"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><rect x="5" y="4.5" width="2" height="7" fill="#777"/><rect x="9" y="4.5" width="2" height="7" fill="#777"/></svg></button>
+    <button class="tb" data-act="animStart" id="tbAnimStart" title="Animation starten"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><path d="M6 4l6 4-6 4z" fill="#14883e"/></svg></button>
+    <button class="tb" data-act="animStop" id="tbAnimStop" title="Animation beenden" disabled><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><rect x="5" y="5" width="6" height="6" fill="#777"/></svg></button>
+    <button class="tb" data-act="animPause" id="tbAnimPause" title="Animation Pause" disabled><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" fill="#fff" stroke="#333"/><rect x="5" y="4.5" width="2" height="7" fill="#777"/><rect x="9" y="4.5" width="2" height="7" fill="#777"/></svg></button>
     <span class="sep"></span>
-    <button class="tb toggle" data-act="toolSelect" id="tbSelect" title="Auswählen: Kurve, Achse oder Text anklicken"><svg viewBox="0 0 16 16"><path d="M4 1.5v11l3-3 2 5 2-1-2-5h4z" fill="#fff" stroke="#000"/></svg></button>
-    <button class="tb toggle" data-act="toolText" id="tbText" title="Text einfügen"><svg viewBox="0 0 16 16"><path d="M3 3h10v2.5M8 3v11M6 14h4M3 3v2.5" fill="none" stroke="#000" stroke-width="1.6"/></svg></button>
+    <button class="tb toggle" data-act="toolSelect" id="tbSelect" title="Objekte bearbeiten"><svg viewBox="0 0 16 16"><path d="M4 1.5v11l3-3 2 5 2-1-2-5h4z" fill="#fff" stroke="#000"/></svg></button>
+    <button class="tb toggle" data-act="toolText" id="tbText" title="Text schreiben"><svg viewBox="0 0 16 16"><path d="M3 3h10v2.5M8 3v11M6 14h4M3 3v2.5" fill="none" stroke="#000" stroke-width="1.6"/></svg></button>
     <span class="sep"></span>
     <button class="tb fmt" data-fmt="bold" title="Fett"><b>F</b></button>
     <button class="tb fmt" data-fmt="italic" title="Kursiv"><i>K</i></button>
     <button class="tb fmt" data-fmt="underline" title="Unterstrichen"><u>U</u></button>
     <button class="tb fmt" data-fmt="sup" title="Hochgestellt">x²</button>
     <button class="tb fmt" data-fmt="sub" title="Tiefgestellt">x₂</button>
-    <select id="fontSize" class="tbsel" title="Schriftgröße">
-      <option>8</option><option>10</option><option selected>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>24</option><option>28</option><option>36</option>
-    </select>
+    <select id="fontSize" class="tbsel" title="Schriftgröße oder Karo-Format"><option>8</option><option>9</option><option>10</option><option selected>12</option><option>14</option><option>18</option><option>24</option><option>32</option><option>48</option><option>72</option></select>
     <select id="fontFamily" class="tbsel wide" title="Schriftart">
       <option value="Arial">Arial</option><option value="Times New Roman">Times New Roman</option><option value="Courier New">Courier New</option><option value="Verdana">Verdana</option><option value="Georgia">Georgia</option>
     </select>
@@ -134,14 +146,14 @@
         <label class="lbl">x-Achse:
           <select id="xAxis"></select>
         </label>
-        <label class="lbl" id="zWrap" hidden>z-Achse:
+        <label class="lbl" id="zWrap" hidden>y-Achse:
           <select id="zAxis"></select>
         </label>
-        <div class="lbl">y-Achse:</div>
+        <div class="lbl" id="listLabel">y-Achse:</div>
         <div class="ylist" id="yList" role="listbox" aria-multiselectable="true" tabindex="0"></div>
         <div class="side-buttons">
           <button class="btn" data-act="input" id="btnInput">Eingabe</button>
-          <button class="btn calc" data-act="double" title="Wiederholungen verdoppeln und neu rechnen"><svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1" fill="#ddd" stroke="#333"/><rect x="4.5" y="3" width="7" height="3" fill="#9c9"/><g fill="#333"><rect x="4.5" y="7.5" width="2" height="1.5"/><rect x="7" y="7.5" width="2" height="1.5"/><rect x="9.5" y="7.5" width="2" height="1.5"/><rect x="4.5" y="10" width="2" height="1.5"/><rect x="7" y="10" width="2" height="1.5"/><rect x="9.5" y="10" width="2" height="3.5"/><rect x="4.5" y="12.5" width="4.5" height="1.5"/></g></svg></button>
+          <button class="btn calc" data-act="double" id="btnWeiter" title="Weiter rechnen…"><svg viewBox="0 0 16 16"><rect x="3" y="1.5" width="10" height="13" rx="1" fill="#ddd" stroke="#333"/><rect x="4.5" y="3" width="7" height="3" fill="#9c9"/><g fill="#333"><rect x="4.5" y="7.5" width="2" height="1.5"/><rect x="7" y="7.5" width="2" height="1.5"/><rect x="9.5" y="7.5" width="2" height="1.5"/><rect x="4.5" y="10" width="2" height="1.5"/><rect x="7" y="10" width="2" height="1.5"/><rect x="9.5" y="10" width="2" height="3.5"/><rect x="4.5" y="12.5" width="4.5" height="1.5"/></g></svg></button>
         </div>
       </div>
     </aside>
@@ -151,21 +163,18 @@
 </div>
 
 <!-- Eingabemaske -->
-<dialog class="dlg mask" id="maskDlg">
+<dialog class="dlg mask" id="maskDlg" aria-label="Algorithmische Modellierung">
   <form method="dialog" class="mask-form" id="maskForm">
     <div class="mask-top">
-      <label>Wiederhole <input type="number" id="mReps" min="1" max="10000000" step="1" value="100"> mal</label>
+      <label>Wiederhole <input type="number" id="mReps" min="1" max="10000000" step="1" value="100" title="Anzahl der berechneten Werte"> mal</label>
       <label>Name der Simulation: <input id="mName" maxlength="64"></label>
     </div>
     <div class="mask-body">
       <div class="mask-left">
-        <div class="mask-tabs">
-          <button type="button" class="mtab active" data-mode="text">Sprachliches Modell</button>
-          <button type="button" class="mtab" data-mode="graphic">Grafisches Modell</button>
-        </div>
+        <button type="button" class="mtab back" id="mTabText" title="Zurück zum Programm">◂ Programm</button>
         <div class="editor-wrap">
           <div class="gutter" id="mGutter" aria-hidden="true"></div>
-          <textarea id="mText" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
+          <textarea id="mText" title="Programmschleife" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
         </div>
         <div class="graphic-model" id="mGraphic" hidden></div>
         <div class="mask-err" id="mErr" role="alert"></div>
@@ -174,6 +183,8 @@
         <div class="sv-title">Startwerte:</div>
         <div class="sv-grid" id="mStart"></div>
         <label class="chk"><input type="checkbox" id="mCase"> Groß-, Kleinschreibung</label>
+        <button type="button" class="btn mbtn" id="mTabVerbal">Sprachliches Modell</button>
+        <button type="button" class="btn mbtn" id="mTabGraphic">Grafisches Modell</button>
       </div>
     </div>
     <div class="mask-bottom">
@@ -192,12 +203,14 @@
     <div class="dlg-buttons" id="genButtons">
       <button type="submit" class="btn ok" value="ok">OK</button>
       <button type="submit" class="btn" value="cancel" formnovalidate>Abbrechen</button>
+      <button type="button" class="btn" id="genHelp" hidden>Hilfe</button>
     </div>
   </form>
 </dialog>
 
-<input type="file" id="fileInput" accept=".prg,.json,.mbw" hidden>
-<img id="printImg" alt="" hidden>
+<input type="file" id="fileInput" accept=".prg,.PRG,.json" hidden>
+<input type="file" id="imageInput" accept="image/*" hidden>
+<div id="printArea" class="print-area"></div>
 
 <script src="js/parser.js"></script>
 <script src="js/prg.js"></script>
