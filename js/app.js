@@ -1474,7 +1474,11 @@ t=t+dt</pre>
         const sims = MoebiusPrg.parsePrg(buf);
         const seen = {};
         sims.forEach((s) => { if (seen[s.name]) s.name = `${s.name} (${++seen[s.name]})`; else seen[s.name] = 1; });
-        nd = { sims: sims.map(({ selected, x, ...s }) => s), view: defaultView(), current: 0 };
+        nd = { sims: sims.map(({ selected, x, anims, ...s }) => s), view: defaultView(), current: 0 };
+        // Animationsbilder der Kurven übernehmen
+        sims.forEach((s) => (s.anims || []).forEach((a) => {
+          nd.view.styles[`${s.name}\u0001${s.caseSensitive ? a.name : a.name.toLowerCase()}`] = { anim: { on: a.on, img: a.img, build: 'animated', type: 'linear' } };
+        }));
         sims.forEach((s) => s.selected.forEach((n) => nd.view.y.push({ sim: s.name, name: n })));
         if (sims[0].x) nd.view.x = sims[0].x;
       } else {

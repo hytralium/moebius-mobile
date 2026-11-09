@@ -52,8 +52,16 @@
       const cnt = dv.getInt32(r + 11, true);
       r += 15;
       if (cnt < 0 || r + cnt * 8 > len) return null;
-      r += cnt * 8 + 53;
-      vars.push({ name: vname, isStart, start, selected: (flags & 1) === 1, cnt });
+      r += cnt * 8;
+      // Kurvenformat: 27 Byte (Byte 26 = Animation an), i32 Bildart (0 keins, 1 PNG als Hex-Text,
+      // 2 Dateiname), str Bilddaten, 18 Byte
+      if (r + 35 > len) return null;
+      const animOn = u8[r + 26] === 1;
+      const imgType = i32(r + 27), imgLen = i32(r + 31);
+      if (imgLen < 0 || r + 35 + imgLen + 18 > len) return null;
+      const imgData = latin1.decode(u8.subarray(r + 35, r + 35 + imgLen));
+      r += 35 + imgLen + 18;
+      vars.push({ name: vname, isStart, start, selected: (flags & 1) === 1, cnt, anim: animOn || imgLen ? { on: animOn, type: imgType, data: imgData } : null });
     }
     // Abschluss der Simulation: x-Achse, y-Achse (3D), Wiederholungen, Groß-/Kleinschreibung
     const sim = { name, lines, vars };
@@ -64,6 +72,22 @@
       if (reps >= 1 && reps <= 1e8) { sim.x = xa[0]; sim.y3 = ya[0]; sim.reps = reps; sim.cs = u8[ya[1] + 4] === 1; r = ya[1] + 5; }
     }
     return { sim, end: r };
+  }
+
+  // Animationsbild: eingebettetes PNG (Hex-Text) → data-URL; Dateiname → passende eigene Grafik
+  function animImage(a) {
+    if (a.type === 1 && /^[0-9a-f]+$/i.test(a.data) && a.data.length % 2 === 0) {
+      let bin = '';
+      for (let i = 0; i < a.data.length; i += 2) bin += String.fromCharCode(parseInt(a.data.substr(i, 2), 16));
+      const mime = bin.startsWith('\x89PNG') ? 'image/png' : bin.startsWith('BM') ? 'image/bmp' : bin.startsWith('\xff\xd8') ? 'image/jpeg' : 'image/gif';
+      return `data:${mime};base64,${btoa(bin)}`;
+    }
+    const n = a.data.toLowerCase();
+    const col = /gruen|grün|green/.test(n) ? 'gruen' : /blau|blue/.test(n) ? 'blau' : 'rot';
+    if (/erde|earth/.test(n)) return 'erde';
+    if (/satellit/.test(n)) return 'satellit';
+    if (/kugel/.test(n)) return `kugel-${col}`;
+    return `kreis-${col}`;
   }
 
   function parsePrg(buffer) {
@@ -103,6 +127,7 @@
         caseSensitive,
         startValues,
         selected: s.vars.filter((v) => v.selected).map((v) => v.name),
+        anims: s.vars.filter((v) => v.anim).map((v) => ({ name: v.name, on: v.anim.on, img: animImage(v.anim) })),
         x: s.x || '',
       };
     });
