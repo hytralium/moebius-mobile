@@ -266,3 +266,6 @@ table.verbal td.pred { color: #1f4fd6; font-style: italic; }
 .form-row { display: block; }
 .form-row > * { margin: 0 6px 4px 0; vertical-align: middle; }
 .form-grid label.chk { display: flex; flex-direction: row; align-items: center; }
+
+/* Dateiauswahl: nicht display:none – iOS öffnet sonst teils keinen Dateidialog */
+.file-input { position: fixed; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }

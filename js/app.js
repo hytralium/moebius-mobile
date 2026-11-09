@@ -1467,7 +1467,8 @@ t=t+dt</pre>
   }
   async function openFile(file) {
     try {
-      const buf = await file.arrayBuffer();
+      // file.arrayBuffer() fehlt in älteren Safari-Versionen → FileReader
+      const buf = file.arrayBuffer ? await file.arrayBuffer() : await new Promise((res, rej) => { const rd = new FileReader(); rd.onload = () => res(rd.result); rd.onerror = () => rej(rd.error || new Error('Datei konnte nicht gelesen werden.')); rd.readAsArrayBuffer(file); });
       const head = new TextDecoder('latin1').decode(new Uint8Array(buf, 0, Math.min(16, buf.byteLength)));
       let nd;
       if (head.startsWith('MOEBIUS')) {
